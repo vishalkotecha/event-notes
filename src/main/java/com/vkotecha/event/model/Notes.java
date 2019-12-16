@@ -1,39 +1,41 @@
-package com.vkotecha.vertx.entity;
+package com.vkotecha.event.model;
 
-import com.vkotecha.vertx.util.DateUtils;
 import java.time.LocalDate;
-
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Vishal Kotecha
  */
 public class Notes {
+  private static final AtomicLong COUNTER = new AtomicLong();
 
   private Long id;
-  private LocalDate dateTime;
   private String title;
   private String description;
-  private Integer noteType;
+  private String date;
+  private String noteType;
   private String speaker;
   private Boolean isPublished;
 
-  public Notes() {
-  }
-
-  public Notes(String title, String description, String dateTime, Integer noteType, String speaker) {
-    this.dateTime = DateUtils.convertStrToLD(dateTime);
+  public Notes(String title, String description) {
+    this.id = COUNTER.getAndIncrement();
     this.title = title;
     this.description = description;
-    this.noteType = noteType;
-    this.speaker = speaker;
+    this.date = LocalDate.now().toString();
+    this.noteType = "session";
+    this.speaker = "Test";
+    this.isPublished = true;
   }
 
-  private Integer parse(String noteType) {
-    try {
-      return Integer.parseInt(noteType);
-    } catch (NumberFormatException nfe) {
-      throw new RuntimeException("Invalid note type!");
-    }
+  public Notes(){
+    this.id = COUNTER.getAndIncrement();
+  }
+
+  public Notes(Long id, String title, String description) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
   }
 
   public Long getId() {
@@ -42,24 +44,6 @@ public class Notes {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public LocalDate getDateTime() {
-    return dateTime;
-  }
-
-  public void setDateTime(LocalDate dateTime) {
-    this.dateTime = dateTime;
-  }
-
-  public java.sql.Date getDate() {
-    if (dateTime == null) { return null; }
-    return java.sql.Date.valueOf(dateTime);
-  }
-
-
-  public void setDate(java.sql.Date dateTime) {
-    this.dateTime = dateTime.toLocalDate();
   }
 
   public String getTitle() {
@@ -78,20 +62,20 @@ public class Notes {
     this.description = description;
   }
 
-  public Integer getNoteType() {
+  public String getDate() {
+    return date;
+  }
+
+  public void setDate(String date) {
+    this.date = date;
+  }
+
+  public String getNoteType() {
     return noteType;
   }
 
-  public void setNoteType(Integer noteType) {
+  public void setNoteType(String noteType) {
     this.noteType = noteType;
-  }
-
-  public Boolean getPublished() {
-    return isPublished;
-  }
-
-  public void setPublished(Boolean published) {
-    isPublished = published;
   }
 
   public String getSpeaker() {
@@ -100,5 +84,13 @@ public class Notes {
 
   public void setSpeaker(String speaker) {
     this.speaker = speaker;
+  }
+
+  public Boolean getPublished() {
+    return isPublished;
+  }
+
+  public void setPublished(Boolean published) {
+    isPublished = published;
   }
 }
